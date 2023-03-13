@@ -1,0 +1,31 @@
+import axios from 'axios';
+
+
+
+export interface HttpAdapter {
+    get<T>( url: string ): Promise<T>;
+}
+
+//Utilizamos una interface "httpAdapter" para seguir los principios de solid de inyectar dependencias, pero estas dependecias pueden ser diferentes, así que tenemos que idear una forma de que sea cual sea la dependencia, la podamos utilizar solamente cambiando el parametro, y para eso creamos una interface, y podemos utilizare cualquiera de las dos dependencias sin realizar cambios en donde la vamos a utilizar.
+
+
+export class PokeAdapterFetch implements HttpAdapter {
+
+    async get<T>(url: string){
+        const resp = await fetch(url);
+        const data: T = await resp.json();
+
+        return data;
+    }
+}
+
+export class PokeApiAdapter implements HttpAdapter {
+
+    private readonly axios = axios;
+
+    async get<T>( url: string){
+        const{ data } = await this.axios.get<T>(url)
+        return data;
+    }
+
+}
